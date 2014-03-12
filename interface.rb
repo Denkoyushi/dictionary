@@ -1,15 +1,22 @@
 require './lib/term'
+require './lib/word'
+require './lib/definition'
 
 @current_term
 
 def term_create
   puts "Please enter a word"
   input_word = gets.chomp
+  puts "Please enter the language"
+  input_language = gets.chomp
   puts "Please enter a definition"
   input_definition = gets.chomp
-  @new_term = Term.create(input_word, input_definition)
+
+
+  @new_word = Word.create(input_word, input_language)
+  @new_term = Term.create(@new_word, input_definition)
+  @current_word = @new_word
   @current_term = @new_term
-  @current_term.words << input_word
   @current_term.definitions << input_definition
   puts "Do you want to enter additional translations of your word? y or n"
   lang_input = gets.chomp
@@ -30,9 +37,13 @@ def term_create
 end
 
 def add_lang
-  puts "Please enter an additional translation"
+  puts "Please enter the translated word"
+  input_word = gets.chomp
+  puts "Please enter the language of the translated word"
   input_lang = gets.chomp
-  @current_term.words << input_lang
+  @new_lang_word = Word.new(input_word, input_lang)
+  @current_term.words << @new_lang_word
+
   puts "Do you want to enter another language? y or n"
   choice_input = gets.chomp
 
@@ -105,7 +116,7 @@ end
 def list_menu
   puts "\n"
   Term.all.each_with_index do |term, index|
-    puts "#{index + 1}) " + term.words.to_s.slice(1..-2)
+    puts "#{index + 1}) " + term.words[index].word
   end
   puts "\nPress 'd' for definition"
   puts "Press 'e' to edit"
@@ -116,7 +127,7 @@ def list_menu
   when 'd'
     puts "which word do you want to see the definition for?"
     def_choice = gets.chomp
-    puts Term.all[def_choice.to_i - 1].words.to_s.slice(1..-2) + " is a " + Term.all[def_choice.to_i - 1].definitions.to_s.slice(1..-2)
+    puts Term.all[def_choice.to_i - 1].words.word + " is a " + Term.all[def_choice.to_i - 1].definitions.to_s.slice(1..-2)
       list_menu
   when 'e'
     puts "which word do you want to edit?"

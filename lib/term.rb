@@ -2,6 +2,14 @@ class Term
 
   @@terms = []
 
+  def add_word(word)
+    @word << word
+  end
+
+  def add_def(definition)
+    @definition << definition
+  end
+
   def Term.create(word, definition)
     test_term = Term.new(word, definition)
     test_term.save
@@ -39,18 +47,11 @@ class Term
   def edit_term(word, definition)
     @word = word.split
     @definition = definition.split
-
   end
 
-
-
   def initialize(word, definition)
-    # @word = word
-    @word = []
-    # @definition = definition
-    @definition = []
-    # add_word(word)
-    # add_definition(definition)
+    @word = [word]
+    @definition = [definition]
   end
 
   def Term.clear
